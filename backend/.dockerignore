@@ -1,0 +1,16 @@
+# Dependencies and local env – never copy into image
+venv
+.env
+.env.*
+*.pyc
+__pycache__
+.pytest_cache
+.coverage
+htmlcov
+*.db
+*.sqlite
+uploads/*
+.git
+.gitignore
+*.md
+.DS_Store

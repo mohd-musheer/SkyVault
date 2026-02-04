@@ -1,0 +1,86 @@
+# ☁️ CloudNest – Secure Cloud Storage Platform
+
+CloudNest is a modern, secure, and user-friendly cloud storage platform that allows users to upload, manage, and access their files from anywhere. Built with a scalable backend and a beautiful frontend UI, CloudNest focuses on simplicity, performance, and real-world production readiness.
+
+---
+
+## ✨ Features
+
+- 🔐 **Secure Authentication**
+  - Email & password based login system
+  - JWT-based session handling
+
+- ☁️ **Cloud File Storage**
+  - Files stored securely using Supabase Storage
+  - No local server storage dependency
+
+- 📂 **File Management**
+  - Upload, list, and delete files
+  - Instant access from any device
+
+- 🕒 **Activity History**
+  - Track file uploads and actions
+  - Clear history option for users
+
+- 🎨 **Modern UI**
+  - Gradient-based attractive design
+  - Responsive and smooth user experience
+
+- 🚀 **Production Ready**
+  - Deployed on Render
+  - Environment-based configuration
+  - Clean API architecture
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React + Vite**
+- HTML, CSS, JavaScript
+- Fetch API
+
+### Backend
+- **FastAPI (Python)**
+- SQLAlchemy
+- JWT Authentication
+
+### Cloud & Database
+- **Supabase**
+  - PostgreSQL
+  - Supabase Storage (Buckets)
+
+### Deployment
+- **Render**
+- GitHub CI-based deployment
+
+---
+
+## 🌐 Live Demo
+
+- **Frontend:** https://cloud-drive-frontend.onrender.com  
+- **Backend API:** https://cloud-drive-backend.onrender.com/docs
+
+---
+
+## 📁 Project Structure
+
+```text
+cloud-drive/
+│
+├── backend/
+│   ├── app/
+│   │   ├── auth.py
+│   │   ├── routes.py
+│   │   ├── database.py
+│   │   └── models.py
+│   ├── main.py
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── index.html
+│   └── vite.config.js
+│
+└── README.md
