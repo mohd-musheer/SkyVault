@@ -1,9 +1,15 @@
 /**
  * ALL frontend API calls here.
  * Frontend kabhi backend logic nahi jaane – sirf ye file use karo.
+ *
+ * In production (Render static site), set VITE_API_URL to your backend URL, e.g.:
+ *   VITE_API_URL=https://cloud-drive-backend.onrender.com
+ *
+ * In local dev, Vite's dev server proxy (/vite.config.js) handles /api → backend,
+ * so leaving VITE_API_URL undefined will use relative URLs (/api/...).
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
 
 function getToken() {
   return localStorage.getItem("token");
@@ -36,7 +42,7 @@ export async function login(email, password) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || "Login failed");
+    throw new Error(parseErrorDetail(err) || "Login failed");
   }
   const data = await res.json();
   if (data.access_token) localStorage.setItem("token", data.access_token);

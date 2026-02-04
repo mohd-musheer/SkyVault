@@ -1,18 +1,24 @@
-# FastAPI & server
+# Core
 fastapi==0.109.2
-uvicorn[standard]==0.27.1
+uvicorn==0.27.1
 
 # Database
 sqlalchemy==2.0.25
+psycopg2-binary==2.9.9
 
-# Auth
-PyJWT==2.8.0
+# Auth / Security
+python-jose==3.3.0
 passlib[bcrypt]==1.7.4
-python-multipart==0.0.9
+PyJWT==2.8.0
 
-# Validation
-pydantic[email]==2.6.1
-pydantic-settings==2.1.0
-psycopg2-binary
-python-dotenv
-supabase
+# Pydantic
+pydantic==2.6.4
+pydantic-settings==2.2.1
+email-validator==2.1.1
+
+# Supabase (LET IT CONTROL HTTP STACK)
+supabase==2.4.0
+
+# Utils
+python-dotenv==1.0.1
+python-multipart==0.0.9
