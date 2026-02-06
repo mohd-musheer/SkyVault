@@ -1,24 +1,22 @@
-# Core
-fastapi==0.109.2
-uvicorn==0.27.1
+fastapi
+uvicorn
 
-# Database
-sqlalchemy==2.0.25
-psycopg2-binary==2.9.9
+# database
+sqlalchemy
+psycopg2-binary
 
-# Auth / Security
-python-jose==3.3.0
-passlib[bcrypt]==1.7.4
-PyJWT==2.8.0
+# auth
+python-jose
+bcrypt==4.0.1
+passlib[bcrypt]
 
-# Pydantic
-pydantic==2.6.4
-pydantic-settings==2.2.1
-email-validator==2.1.1
+# pydantic
+pydantic
+email-validator
+python-multipart
+python-dotenv
 
-# Supabase (LET IT CONTROL HTTP STACK)
-supabase==2.4.0
+# ✅ SUPABASE (STABLE)
+supabase==1.0.4
+PyJWT
 
-# Utils
-python-dotenv==1.0.1
-python-multipart==0.0.9

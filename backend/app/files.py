@@ -1,25 +1,21 @@
 """
 File upload, download, storage usage calculation (Supabase Storage).
 """
+
 import os
-
-# ---- DISABLE RENDER PROXY INJECTION (CRITICAL FIX) ----
-for k in [
-    "HTTP_PROXY",
-    "HTTPS_PROXY",
-    "http_proxy",
-    "https_proxy",
-]:
-    os.environ.pop(k, None)
-
 import uuid
 from pathlib import Path
 from typing import List, Optional
 
+# --------------------------------------------------
+# 🔥 CRITICAL FIX: Disable Render / Docker proxy vars
+# --------------------------------------------------
+for k in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"):
+    os.environ.pop(k, None)
+
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File as FastAPIFile
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-
 from supabase import create_client
 
 from app.database import get_db
@@ -32,39 +28,24 @@ from app.config import (
     SUPABASE_BUCKET,
 )
 
-
-# ---------------- SUPABASE (RENDER-SAFE INIT) ----------------
-# ---------------- SUPABASE (STABLE INIT) ----------------
-
-# ---- DISABLE RENDER PROXY INJECTION ----
-for k in ["HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"]:
-    os.environ.pop(k, None)
-
-from supabase import create_client
-
-from app.config import (
-    SUPABASE_URL,
-    SUPABASE_SERVICE_KEY,
-    SUPABASE_BUCKET,
-)
-
+# --------------------------------------------------
+# ✅ SUPABASE CLIENT (STABLE INIT)
+# --------------------------------------------------
 if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
     raise RuntimeError("Supabase credentials missing")
 
 try:
-    supabase = create_client(
-        SUPABASE_URL,
-        SUPABASE_SERVICE_KEY
-    )
+    supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 except Exception as e:
     print(f"CRITICAL: Failed to initialize Supabase client: {e}")
-    raise RuntimeError("Supabase client failed to initialize.")
+    raise RuntimeError("Supabase client failed to initialize")
 
-
-# -----------------------------------------------------
+# --------------------------------------------------
 
 router = APIRouter(prefix="/api/files", tags=["files"])
 
+
+# ---------------- ACTIVITY LOGGER ----------------
 
 def log_activity(
     db: Session,
@@ -120,7 +101,6 @@ async def upload_file(
     if not file.filename:
         raise HTTPException(status_code=400, detail="No filename")
 
-    # Read content asynchronously
     content = await file.read()
     size = len(content)
 
@@ -134,7 +114,10 @@ async def upload_file(
         supabase.storage.from_(SUPABASE_BUCKET).upload(
             stored_name,
             content,
-            {"content-type": file.content_type or "application/octet-stream"},
+            {
+                "content-type": file.content_type
+                or "application/octet-stream"
+            },
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Upload failed: {e}")
@@ -198,15 +181,13 @@ def download_file(
     if not f:
         raise HTTPException(status_code=404, detail="File not found")
 
-    # Generate signed URL
-    res = supabase.storage.from_(SUPABASE_BUCKET).create_signed_url(f.stored_filename, 60)
-    
-    # Handle SDK response variations
-    url = None
-    if isinstance(res, dict):
-        url = res.get("signedURL") or res.get("url")
-    elif hasattr(res, "signed_url"):
-        url = res.signed_url
+    try:
+        res = supabase.storage.from_(SUPABASE_BUCKET).create_signed_url(
+            f.stored_filename, 60
+        )
+        url = res.get("signedURL") or res.get("signedUrl")
+    except Exception:
+        url = None
 
     if not url:
         raise HTTPException(status_code=404, detail="File missing in storage")
@@ -233,20 +214,19 @@ def delete_file(
     if not f:
         raise HTTPException(status_code=404, detail="File not found")
 
-    # 1. Remove from cloud
+    # Remove from Supabase (ignore failure)
     try:
         supabase.storage.from_(SUPABASE_BUCKET).remove([f.stored_filename])
-    except:
-        pass # Continue to clean DB even if cloud removal fails
+    except Exception:
+        pass
 
-    # 2. Update activity logs to prevent foreign key errors
+    # Clear activity FK
     db.query(Activity).filter(Activity.file_id == f.id).update(
         {Activity.file_id: None}
     )
 
     log_activity(db, user.id, "delete", f.original_filename)
 
-    # 3. Remove from DB
     db.delete(f)
     db.commit()
 
