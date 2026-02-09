@@ -3,6 +3,13 @@
 CloudNest is a modern, secure, and user-friendly cloud storage platform that allows users to upload, manage, and access their files from anywhere. Built with a scalable backend and a beautiful frontend UI, CloudNest focuses on simplicity, performance, and real-world production readiness.
 
 ---
+---
+
+## 🌐 Live Demo
+
+- **Frontend:** https://skyvault-storage.onrender.com  
+
+---
 
 ## ✨ Features
 
@@ -54,14 +61,7 @@ CloudNest is a modern, secure, and user-friendly cloud storage platform that all
 - **Render**
 - GitHub CI-based deployment
 
----
 
-## 🌐 Live Demo
-
-- **Frontend:** https://cloud-drive-frontend.onrender.com  
-- **Backend API:** https://cloud-drive-backend.onrender.com/docs
-
----
 
 ## 📁 Project Structure
 
