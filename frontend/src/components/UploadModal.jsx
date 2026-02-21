@@ -54,9 +54,6 @@ export default function UploadModal({ onUpload, onClose, initialFile }) {
     const toUpload = file;
     uploadStartedRef.current = true;
     runUpload(toUpload);
-    return () => {
-      uploadStartedRef.current = false;
-    };
   }, [file]);
 
   const onDrop = (e) => {

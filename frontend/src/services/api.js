@@ -111,6 +111,25 @@ export async function downloadFile(fileId) {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Download failed");
+
+  const contentType = res.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    const data = await res.json();
+    if (data.url) {
+      const urlObj = new URL(data.url);
+      if (data.filename && !urlObj.searchParams.has("download")) {
+        urlObj.searchParams.append("download", data.filename);
+      }
+      const a = document.createElement("a");
+      a.href = urlObj.toString();
+      a.download = data.filename || "download";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return;
+    }
+  }
+
   const blob = await res.blob();
   const disposition = res.headers.get("Content-Disposition");
   const nameMatch = disposition && disposition.match(/filename="?([^";]+)"?/);
@@ -119,7 +138,9 @@ export async function downloadFile(fileId) {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 

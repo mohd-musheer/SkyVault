@@ -194,7 +194,7 @@ def download_file(
 
     log_activity(db, user.id, "download", f.original_filename, f.id)
 
-    return {"url": url}
+    return {"url": url, "filename": f.original_filename}
 
 
 # ---------------- DELETE ----------------
